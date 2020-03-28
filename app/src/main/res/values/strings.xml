@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Assets View</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Sandeep Verma</string>
+    <string name="nav_header_subtitle">sankiid@gmail.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_expense">Expense</string>
+    <string name="menu_income">Income</string>
+    <string name="menu_invest">Investment</string>
+    <string name="menu_category">Category</string>
+
+</resources>
