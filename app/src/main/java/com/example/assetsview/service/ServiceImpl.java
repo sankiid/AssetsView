@@ -78,11 +78,12 @@ public class ServiceImpl implements Service {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("action", getAddAction(entity.getType()));
+                params.put("action", "add");
                 params.put("cat", entity.getCategory().getName());
                 params.put("amt", entity.getAmount());
                 params.put("desc", entity.getDescription());
-                params.put("date", entity.getDate());
+                params.put("date", String.valueOf(entity.getDate()));
+                params.put("type", entity.getType().getName());
 
                 return params;
             }
@@ -96,7 +97,7 @@ public class ServiceImpl implements Service {
     @Override
     public void fetchDate(final AdapterView adapterView, final Type type, final int layout) {
         final String tag = type.getName();
-        String _url = url + "?action=" + getGetAction(type);
+        String _url = url + "?action=get&type=" + type.getName();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, _url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -115,16 +116,13 @@ public class ServiceImpl implements Service {
 
     private void parseResponse(String response, final AdapterView adapterView, String tag, Type type, int layout) {
         try {
-            Base _base = this.factory.getEntity(type, new Category("Category", Type.HEADER_TYPE), "Date", "Amount", "Desc");
-            this.entityList.add(_base);
-
             JSONObject jobj = new JSONObject(response);
             JSONArray jarray = jobj.getJSONArray("entity");
 
             for (int i = 0; i < jarray.length(); i++) {
                 JSONObject jo = jarray.getJSONObject(i);
 
-                String date = jo.getString("DATE");
+                long date = Long.parseLong(jo.getString("DATE"));
                 String category = jo.getString("CATEGORY");
                 String amount = jo.getString("AMOUNT");
                 String desc = jo.getString("DESC");
@@ -139,34 +137,9 @@ public class ServiceImpl implements Service {
         adapterView.setAdapter(listAdapter);
     }
 
-    private String getAddAction(Type type) {
-        switch (type) {
-            case INCOME:
-                return "addIncome";
-            case INVEST:
-                return "addInvest";
-            case EXPENSE:
-                return "addExpense";
-        }
-        return null;
-    }
-
-    private String getGetAction(Type type) {
-        switch (type) {
-            case INCOME:
-                return "getIncome";
-            case INVEST:
-                return "getInvest";
-            case EXPENSE:
-                return "getExpense";
-        }
-        return null;
-    }
-
     @Override
-    public void fetchGraphData(final Type type, final PieChart pieChart, int startMonth, int startYear, int endMonth, int endYear) {
-        final String tag = type.getName();
-        String _url = url + "?action=" + getGraphAction(type) + "&sm=" + startMonth + "&sy=" + startYear + "&em=" + endMonth + "&ey=" + endYear;
+    public void fetchGraphData(final Type type, final PieChart pieChart, long startTime, long endTime) {
+        String _url = url + "?action=graph&type="+type.getName()+"&st=" + startTime + "&et=" + endTime;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, _url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -213,17 +186,5 @@ public class ServiceImpl implements Service {
             Log.e(type.getName(), "some error happened " + e.getMessage());
         }
 
-    }
-
-    private String getGraphAction(Type type) {
-        switch (type) {
-            case INCOME:
-                return "getIncomePerCategory";
-            case INVEST:
-                return "getInvestPerCategory";
-            case EXPENSE:
-                return "getExpensePerCategory";
-        }
-        return null;
     }
 }

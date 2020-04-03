@@ -111,11 +111,10 @@ public class ExpenseFragment extends DialogFragment implements
 
     @Override
     public void onClick(View v) {
-        String date = Utils.parseDate(expDate.getText().toString().trim(), Type.EXPENSE.getName());
+        long date = Utils.parseDate(expDate.getText().toString().trim());
         String amount = Utils.parseAmount(expAmount.getText().toString().trim());
         String desc = expDesc.getText().toString().trim();
         Category category = new Category(this.category, Type.EXPENSE);
-
         service.save(new Expense(category, amount, date, desc), Type.EXPENSE.getName());
     }
 }

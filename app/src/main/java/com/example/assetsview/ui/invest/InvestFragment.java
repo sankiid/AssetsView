@@ -112,7 +112,7 @@ public class InvestFragment extends DialogFragment implements
 
     @Override
     public void onClick(View v) {
-        String date = Utils.parseDate(invDate.getText().toString().trim(), Type.INVEST.getName());
+        long date = Utils.parseDate(invDate.getText().toString().trim());
         String amount = Utils.parseAmount(invAmount.getText().toString().trim());
         String desc = invDesc.getText().toString().trim();
         Category category = new Category(this.category, Type.INVEST);

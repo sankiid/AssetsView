@@ -1,7 +1,6 @@
 package com.example.assetsview.service;
 
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.example.assetsview.entity.Base;
 import com.example.assetsview.entity.Type;
@@ -13,5 +12,5 @@ public interface Service {
 
     void fetchDate(final AdapterView adapterView, Type type, final int layout);
 
-    void fetchGraphData(Type invest, PieChart pieChart,  int startMonth, int startYear, int endMonth, int endYear);
+    void fetchGraphData(Type invest, PieChart pieChart, long startTime, long endTime);
 }

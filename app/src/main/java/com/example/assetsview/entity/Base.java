@@ -4,11 +4,11 @@ public abstract class Base {
 
     private Category category;
     private String amount;
-    private String date;
+    private long date;
     private String description;
     private Type type;
 
-    public Base(Category category, String amount, String date, String description, Type type) {
+    public Base(Category category, String amount, long date, String description, Type type) {
         this.category = category;
         this.amount = amount;
         this.date = date;
@@ -32,11 +32,11 @@ public abstract class Base {
         this.amount = amount;
     }
 
-    public String getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(long date) {
         this.date = date;
     }
 

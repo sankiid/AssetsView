@@ -1,7 +1,8 @@
 package com.example.assetsview;
-
+  
 public interface Constants {
 
+    String url = null;
 
     String CATEGORY = "CAT";
 

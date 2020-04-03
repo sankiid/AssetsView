@@ -117,7 +117,7 @@ public class IncomeFragment extends DialogFragment implements
 
     @Override
     public void onClick(View v) {
-        String date = Utils.parseDate(incDate.getText().toString().trim(), Type.INCOME.getName());
+        long date = Utils.parseDate(incDate.getText().toString().trim());
         String amount = Utils.parseAmount(incAmount.getText().toString().trim());
         String desc = incDesc.getText().toString().trim();
         Category category = new Category(this.category, Type.INCOME);

@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.assetsview.R;
+import com.example.assetsview.Utils;
 import com.example.assetsview.entity.Base;
 import com.example.assetsview.entity.Type;
 
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class EntityListAdaptor extends ArrayAdapter<Base> {
 
+    public static final String DD_MM_YY = "dd/MM/yy";
     private Context context;
     private int resource;
     private int[] color;
@@ -33,7 +35,7 @@ public class EntityListAdaptor extends ArrayAdapter<Base> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        String date = getItem(position).getDate();
+        long date = getItem(position).getDate();
         String category = getItem(position).getCategory().getName();
         String amount = getItem(position).getAmount();
         String desc = getItem(position).getDescription();
@@ -52,7 +54,7 @@ public class EntityListAdaptor extends ArrayAdapter<Base> {
         TextView amtView = getAmountView(type, convertView);
         TextView descView = getDescView(type, convertView);
 
-        dateView.setText(date);
+        dateView.setText(Utils.format(date, DD_MM_YY));
         catView.setText(category);
         amtView.setText(amount);
         descView.setText(desc);

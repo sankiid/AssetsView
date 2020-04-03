@@ -1,8 +1,8 @@
 package com.example.assetsview.ui.home;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +20,13 @@ import com.github.dewinjm.monthyearpicker.MonthYearPickerDialog;
 import com.github.dewinjm.monthyearpicker.MonthYearPickerDialogFragment;
 import com.github.mikephil.charting.charts.PieChart;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
+
+import static com.example.assetsview.Utils.format;
 
 public class HomeFragment extends DialogFragment {
 
+    public static final String MM_YY = "MM/yy";
     private PieChart expensePieChart;
     private PieChart incomePieChart;
     private PieChart investPieChart;
@@ -34,10 +35,8 @@ public class HomeFragment extends DialogFragment {
     private TextView textView;
     private Button button;
     private Service service;
-    private int startMonth;
-    private int startYear;
-    private int endMonth;
-    private int endYear;
+    private long startTime;
+    private long endTime;
 
     @Override
     public void onAttach(Context context) {
@@ -63,9 +62,12 @@ public class HomeFragment extends DialogFragment {
                 dialogFragment.setOnDateSetListener(new MonthYearPickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(int year, int month) {
-                        startMonth = month;
-                        startYear = year % 2000;
-                        startDate.setText(format(year, month));
+                        Calendar c = Calendar.getInstance();
+                        c.set(Calendar.YEAR, year);
+                        c.set(Calendar.MONTH, month);
+                        startDate.setText(format(c.getTimeInMillis(), MM_YY));
+                        c.set(Calendar.DAY_OF_MONTH, 0);
+                        startTime = c.getTimeInMillis();
                     }
                 });
             }
@@ -83,30 +85,33 @@ public class HomeFragment extends DialogFragment {
                 dialogFragment.setOnDateSetListener(new MonthYearPickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(int year, int month) {
-                        endMonth = month;
-                        endYear = year % 2000;
-                        endDate.setText(format(year, month));
+                        Calendar c = Calendar.getInstance();
+                        c.set(Calendar.YEAR, year);
+                        c.set(Calendar.MONTH, month);
+                        c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+                        endTime = c.getTimeInMillis();
+                        endDate.setText(format(endTime, MM_YY));
                     }
                 });
             }
         });
 
         Calendar c = Calendar.getInstance();
-        startYear = c.get(Calendar.YEAR) % 2000;
-        endYear = c.get(Calendar.YEAR) % 2000;
-        startMonth = c.get(Calendar.MONTH);
-        endMonth = c.get(Calendar.MONTH);
-        startDate.setText(format(startYear, startMonth));
-        endDate.setText(format(endYear, endMonth));
+        startDate.setText(format(c.getTimeInMillis(), MM_YY));
+        endDate.setText(format(c.getTimeInMillis(), MM_YY));
+
+        endTime = c.getTimeInMillis();
+        c.set(Calendar.DAY_OF_MONTH, 0);
+        startTime = c.getTimeInMillis();
 
         expensePieChart = view.findViewById(R.id.expense_chart);
-        service.fetchGraphData(Type.EXPENSE, expensePieChart, startMonth + 1, startYear, endMonth + 1, endYear);
+        service.fetchGraphData(Type.EXPENSE, expensePieChart, startTime, endTime);
 
         incomePieChart = view.findViewById(R.id.income_chart);
-        service.fetchGraphData(Type.INCOME, incomePieChart, startMonth + 1, startYear, endMonth + 1, endYear);
+        service.fetchGraphData(Type.INCOME, incomePieChart, startTime, endTime);
 
         investPieChart = view.findViewById(R.id.invest_chart);
-        service.fetchGraphData(Type.INVEST, investPieChart, startMonth + 1, startYear, endMonth + 1, endYear);
+        service.fetchGraphData(Type.INVEST, investPieChart, startTime, endTime);
 
         // button click
         button = view.findViewById(R.id.home_filter);
@@ -114,22 +119,13 @@ public class HomeFragment extends DialogFragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                service.fetchGraphData(Type.EXPENSE, expensePieChart, startMonth + 1, startYear, endMonth + 1, endYear);
-                service.fetchGraphData(Type.INCOME, incomePieChart, startMonth + 1, startYear, endMonth + 1, endYear);
-                service.fetchGraphData(Type.INVEST, investPieChart, startMonth + 1, startYear, endMonth + 1, endYear);
+                Log.i("fun", "start " + startTime + ", end " + endTime);
+                service.fetchGraphData(Type.EXPENSE, expensePieChart, startTime, endTime);
+                service.fetchGraphData(Type.INCOME, incomePieChart, startTime, endTime);
+                service.fetchGraphData(Type.INVEST, investPieChart, startTime, endTime);
             }
         });
 
         return view;
     }
-
-    private String format(int year, int month) {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.YEAR, year + 2000);
-        c.set(Calendar.MONTH, month);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/yy", Locale.US);
-        return sdf.format(c.getTime());
-    }
-
 }

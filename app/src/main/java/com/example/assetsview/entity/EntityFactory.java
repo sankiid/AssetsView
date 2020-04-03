@@ -2,7 +2,7 @@ package com.example.assetsview.entity;
 
 public class EntityFactory {
 
-    public Base getEntity(Type type, Category category, String date, String amount, String desc) {
+    public Base getEntity(Type type, Category category, long date, String amount, String desc) {
         switch (type) {
             case INCOME:
                 return new Income(category, amount, date, desc);
